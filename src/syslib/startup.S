@@ -36,14 +36,6 @@ _start:
 
 /* Включение FPU (из system.asm) */
 	call mstatus_fs
-//	/* Enable FPU */
-//	li t0, MSTATUS_FS //0x2000
-//	csrs mstatus, t0
-//	csrr t1, mstatus
-//	and t1, t1, t0
-//	beqz t1, 1f
-//	fssr x0
-//1:
 
 /* Настройка mtvec: Обработчик прерываний */
 	la a0, handler
