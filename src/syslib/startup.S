@@ -41,9 +41,6 @@ _start:
 	la a0, handler
 	call set_mtvec
 
-/* Обнуление диагностики прерываний*/
-	call clean_interrupt_diag
-
 /* Инициализация подсистем */
 	call init
 

@@ -123,12 +123,14 @@ debug_stop_counters:
 
 
 .global set_mtvec
+.type set_mtvec,@function
 set_mtvec:
 	csrw mtvec, a0
 	ret
 
 
 .global set_mepc
+.type set_mepc,@function
 set_mepc:
 	csrw mepc, a0
 	ret
