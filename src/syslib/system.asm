@@ -1,20 +1,12 @@
-# extern "C"
-# {
-#	 void setup_stack_pointer(long unsigned int);
-#	 unsigned long int cycle(void);
-#	 void write_result(int number);
-#	 void cycle_clear(void);
-# }
+/*
+ * system.asm
+ *
+ * Author: PehotinDO
+ */
+
 .align 8
 
-.global setup_stack_pointer
-.global cycle_clear
-.global cycle
-.global WaitingByMcycle
-.global write_result
-.global prob_timer
-.global mstatus_fs
-
+//========================================
 
 MTIME_K:
 .dword 0x3EBA36E2EB1C432D //= 0,0000015625 = 100 / 64000000 hz
@@ -22,26 +14,15 @@ MCYCLE_K:
 //.dword 0x3E50C6F7A0B5ED8D //= 0,000000015625 = 1/64000000 hz
 .dword 0x3E55798EE2308C3A //= 0,00000002 s = 1 / 50 MHz
 
+//========================================
 
-setup_stack_pointer:
-	mv x2, a0
-	ret
-
-
-FF64:
-.dword 0xffffffffffffffff
-.global cycle_clear
-cycle_clear:
-	ld t0, FF64
-	csrrc x0, mcycle, t0
-	ret
-
-
+.global cycle
 cycle:
 	csrrs a0, mcycle, x0
 	ret
 
 
+.global WaitingByMcycle
 WaitingByMcycle://в fа0 необходимо передать время, которое надо выждать
 	csrrs 		t1,  mcycle, zero
 	fcvt.d.l 	ft0, t1				//переводим значение mcycle  в double
@@ -55,14 +36,6 @@ WaitingByMcycle://в fа0 необходимо передать время, ко
 	fcvt.d.l 	ft3, t1
 	flt.d 		t0,  ft2, ft3		//сравниваем значения
 	beq 		t0,  zero, loopWaitingByMcycle
-	ret
-
-
-mstatus_fs:
-	csrrs x11, mstatus, x0
-	li x10, 0x2000
-	or x11, x10, x11
-	CSRRS x0, mstatus, x11
 	ret
 
 
@@ -94,18 +67,6 @@ get_time_mcycle:
 	fmul.d		fa0, ft1, ft0 //fa0 = f10 = �����
 	ret
 
-
-.global simple_trap
-simple_trap:
-	//����� ��������� ���������� -> mtvec
-	la 			t0, trap_label
-	csrrs 		x0, mtvec, t0
-	ret
-	//�������
-	trap_label:
-	csrrs 		t0, mcause, x10 ///����������????
-	csrrs 		t1, mie, x0
-	ret
 
 .global get_minstret
 get_minstret:

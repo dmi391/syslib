@@ -7,14 +7,14 @@
 #ifndef SYSLIB_SYSLIB_H_
 #define SYSLIB_SYSLIB_H_
 
+extern "C" unsigned long int cycle(void);
+
 extern "C" inline void set_mtvec(void (*ptr)(void));
-
-extern "C" void handler(void) __attribute__((interrupt));
-extern "C" void enother_handler(void) __attribute__((interrupt));
-
 extern "C" inline void set_mepc(void (*ptr)(void));
 
-extern "C" void init(void);
+
+extern "C" void handler(void) __attribute__((interrupt, aligned(32))); //__attribute__ ((aligned (8))) //__attribute__((section(".interrupt_handler"), interrupt));
+extern "C" void enother_handler(void) __attribute__((interrupt));
 
 extern inline void __attribute__((always_inline))  get_interrupt_diag(void);
 

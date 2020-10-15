@@ -24,10 +24,13 @@ SECTIONS
 
 . = 0x10000000;
 
+.init :
+{
+  KEEP (*(SORT_NONE(.init)))
+} > RAM_MEM
 
 .text ALIGN(8) :
 {
-  *(.init)
   *(.text)
 } > RAM_MEM
 
@@ -39,6 +42,21 @@ SECTIONS
 .rodata ALIGN(8) :
 {
   *(.rodata)
+} > RAM_MEM
+
+.preinit_array ALIGN(8) :
+{
+  PROVIDE_HIDDEN (__preinit_array_start = .);
+  KEEP (*(.preinit_array))
+  PROVIDE_HIDDEN (__preinit_array_end = .);
+} > RAM_MEM
+
+.init_array ALIGN(8) :
+{
+  PROVIDE_HIDDEN (__init_array_start = .);
+  KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
+  KEEP (*(.init_array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o ) .ctors))
+  PROVIDE_HIDDEN (__init_array_end = .);
 } > RAM_MEM
 
 
