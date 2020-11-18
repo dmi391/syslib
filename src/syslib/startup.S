@@ -53,16 +53,16 @@ _start:
 // Enable FPU and Hwacha
 	call	mstatus_fs_xs
 
+// Interrupt/Exception trap
+	la		t0, trap
+	csrw	mtvec, t0
+
 // Call global destructors (not necessary for embedded)
 /*	la		a0, __libc_fini_array
 	call	atexit
 */
 // Call global constructors
 	call	__libc_init_array
-
-// Interrupt/Exception trap
-	la		t0, trap
-	csrw	mtvec, t0
 
 // argc = argv = 0
 	li		a0, 0
