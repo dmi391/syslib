@@ -39,3 +39,4 @@ Toolchain: RISC-V GCC/Newlib (riscv64-unknown-elf-gcc)
 			`-fno-unwind-tables`
 			`-fno-use-cxa-atexit` (деструкторы static объектов)[7]
 			`-fno-threadsafe-statics`
+			`-Xlinker --gc-sections` (Remove unused sections)
