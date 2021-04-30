@@ -7,14 +7,20 @@
 #ifndef SYSLIB_SYSLIB_H_
 #define SYSLIB_SYSLIB_H_
 
-extern "C" unsigned long int cycle(void);
 
-extern "C" inline void set_mtvec(void (*ptr)(void));
-extern "C" inline void set_mepc(void (*ptr)(void));
+extern "C" void Enable_ExternalInterrupt(void);
+extern "C" void Disable_ExternalInterrupt(void);
+extern "C" void SetHandler(void (*ptrHandler)(void));
+extern "C" void SetMepc(void (*ptrReturn)(void));
 
 
-extern "C" void handler(void) __attribute__((interrupt, aligned(32))); //__attribute__ ((aligned (8))) //__attribute__((section(".interrupt_handler"), interrupt));
-extern "C" void enother_handler(void) __attribute__((interrupt));
+
+
+extern "C" void handler(void) __attribute__((interrupt, aligned(4))); //__attribute__ ((aligned (8))) //__attribute__((section(".interrupt_handler"), interrupt));
+extern "C" void enother_handler(void) __attribute__((interrupt, aligned(4)));
+
+
+
 
 extern inline void __attribute__((always_inline))  get_interrupt_diag(void);
 
@@ -38,6 +44,25 @@ typedef struct
 	unsigned long int mip;
 
 }_interrupt_diag;
+
+//==================================================
+
+#define ReadCsr(reg) ({ \
+    register unsigned long __tmp; \
+    asm volatile ("csrr %[in], " #reg :[in] "=r"(__tmp) ::); \
+    __tmp; })
+
+
+#define WriteCsr(reg, val) ({ \
+    asm volatile ("csrw "#reg", %[out]" ::[out] "r"(val):); })
+
+
+#define SetBitsCsr(reg, bits) ({ \
+	asm volatile ("csrs "#reg", %[out]" ::[out] "r"(bits):); })
+
+
+#define ClearBitsCsr(reg, bits) ({ \
+	asm volatile ("csrc "#reg", %[out]" ::[out] "r"(bits):); })
 
 
 #endif /* SYSLIB_SYSLIB_H_ */

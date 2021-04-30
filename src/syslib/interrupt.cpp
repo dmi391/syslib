@@ -8,10 +8,8 @@
 
 _interrupt_diag interrupt_diag __attribute__((section (".diag_section"))) __attribute__((aligned(8))) = {0};
 
-extern "C" double get_time_mcycle(void);
 
-
-//Обработчик прерываний, назначаемый в startup
+//Обработчик исключений/прерываний
 extern "C"
 {
 	void handler(void)
@@ -51,7 +49,7 @@ extern "C"
 }
 
 
-//Для переназначения обработчика
+//Другой обработчик исключений/прерываний
 extern "C"
 {
 	void enother_handler(void)
@@ -75,15 +73,15 @@ extern "C"
 				interrupt_compleat();
 				DisableExternInterrupt();
 
+				//array[claim]();
 				break;
 			}
-			default:	//все остальное
+			default:	//Всё остальное
 			{
 
 				break;
 			}
 		}
-
 		return;
 	}
 }
@@ -158,8 +156,9 @@ void interrupt_compleat(void)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#define MSTATUS_MIE 			0x0008
 #define MIE_MEIE				0x0800
+#define MSTATUS_MIE 			0x0008
+
 #define PRIORITY_REG			0x0C000004
 #define ENABLE_REG				0x0C002000
 #define THRESHOLD_REG			0x0C200000
@@ -245,3 +244,34 @@ void ptr_interrupt_compleat(void)
 	*(unsigned long int*)CLAIM_COMPLETE_REG = claim;
 	return;
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void Enable_ExternalInterrupt()
+{
+	asm volatile ("csrs		mie,		%[val]" ::[val] "r"(MIE_MEIE):);	//mie.meie = 1
+	asm volatile ("csrs		mstatus,	%[val]" ::[val] "r"(MSTATUS_MIE):);	//mstatus.mie = 1
+}
+
+
+void Disable_ExternalInterrupt()
+{
+	asm volatile("csrc		mstatus,	%[val]" ::[val] "r"(MSTATUS_MIE):);	//mstatus.mie = 0
+	asm volatile("csrc		mie,		%[val]" ::[val] "r"(MIE_MEIE):);	//mie.meie = 0
+}
+
+
+void SetHandler(void (*ptrHandler)(void))
+{
+	asm volatile ("csrw		mtvec,		%[tmp]" ::[tmp] "r"(ptrHandler):);
+}
+
+
+void SetMepc(void (*ptrReturn)(void))
+{
+	asm volatile ("csrw		mepc,		%[tmp]" ::[tmp] "r"(ptrReturn):);
+}
+
