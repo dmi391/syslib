@@ -1,7 +1,7 @@
 /*
  * startup.S
  *
- * Author: PehotinDO
+ * 		Author: PehotinDO
  */
 
 .section .init

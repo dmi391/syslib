@@ -1,7 +1,7 @@
 /*
  * syslib.h
  *
- * Author: PehotinDO
+ * 		Author: PehotinDO
  */
 
 #ifndef SYSLIB_SYSLIB_H_
