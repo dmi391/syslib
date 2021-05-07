@@ -48,9 +48,9 @@ typedef struct
 //==================================================
 
 #define ReadCsr(reg) ({ \
-    register unsigned long __tmp; \
-    asm volatile ("csrr %[in], " #reg :[in] "=r"(__tmp) ::); \
-    __tmp; })
+    register unsigned long readval; \
+    asm volatile ("csrr %[in], " #reg :[in] "=r"(readval) ::); \
+    readval; })
 
 
 #define WriteCsr(reg, val) ({ \
