@@ -7,6 +7,15 @@
 #ifndef SYSLIB_SYSLIB_H_
 #define SYSLIB_SYSLIB_H_
 
+#include <cstdint>
+
+
+extern "C" void PlicPriority(uint8_t id, uint8_t priority);
+
+
+
+
+
 
 extern "C" void Enable_ExternalInterrupt(void);
 extern "C" void Disable_ExternalInterrupt(void);

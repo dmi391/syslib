@@ -33,12 +33,22 @@ int  main()
 
 
 ///////////////////////////////////////////////
+	PlicPriority(1, 2);
+	PlicPriority(1, 7);//0x3
+	PlicPriority(2, 2);
+	PlicPriority(3, 3);
+	PlicPriority(4, 4); //Не записывается. Остается 0x0
+
+
 
 
 	SetHandler(&enother_handler);
 
 	int i = 1;
 	//asm(".word 0x80ffffff"); //exception: illegal instruction
+
+	EnableExternInterrupt();
+	i++;
 
 	EnableExternInterrupt();
 	i++;
