@@ -27,6 +27,78 @@ void DisableExternalInterrupt()	//For interrupts from PLIC
 //==================================================
 //PLIC configuration
 
+void SetPlicPriority(uint8_t id, uint8_t priority)
+{
+	(&PLIC_PRIORITY)[id] = priority;
+}
+
+void SetPlicEnable(uint8_t id, state st)
+{
+	if(ENABLE == st)
+	{
+		PLIC_ENABLE |= (1 << id);
+	}
+	else //DISABLE
+	{
+		PLIC_ENABLE &= ~(1 << id);
+	}
+}
+
+void SetPlicThreshold(uint8_t threshold)
+{
+	PLIC_THRESHOLD = threshold;
+}
+
+uint32_t GetPlicPending(void)	//plic.pending is read only
+{
+	return PLIC_PENDING;
+}
+
+uint32_t PlicComplete(void)
+{
+	register uint32_t _clime = PLIC_CLAIM;
+	PLIC_CLAIM = _clime;
+	return _clime;
+}
+
+/**
+ * @brief Сбросить plic.pending
+ */
+void PlicClearPending(void)
+{
+	//Сохранение регистров PLIC
+	register uint32_t _plicPriority1 = (&PLIC_PRIORITY)[1];
+	register uint32_t _plicPriority2 = (&PLIC_PRIORITY)[2];
+	register uint32_t _plicPriority3 = (&PLIC_PRIORITY)[3];
+	register uint32_t _plicEnable = PLIC_ENABLE;
+	register uint32_t _plicThreshold = PLIC_THRESHOLD;
+
+	SetPlicPriority(1, 3);
+	SetPlicPriority(2, 3);
+	SetPlicPriority(3, 3);
+	SetPlicEnable(1, ENABLE);
+	SetPlicEnable(2, ENABLE);
+	SetPlicEnable(3, ENABLE);
+	SetPlicThreshold(0);	//??
+
+	//Сбросить все plic.pending
+	register uint32_t claimVal = PLIC_CLAIM;
+	while(claimVal != 0)
+	{
+		PLIC_CLAIM = claimVal;
+		claimVal = PLIC_CLAIM;
+	}
+
+	//Восстановление регистров PLIC
+	(&PLIC_PRIORITY)[1] = _plicPriority1;
+	(&PLIC_PRIORITY)[2] = _plicPriority2;
+	(&PLIC_PRIORITY)[3] = _plicPriority3;
+	PLIC_ENABLE = _plicEnable;
+	PLIC_THRESHOLD = _plicThreshold;
+}
+
+////////////////
+
 ///Убрать!!!
 #define PLIC_PRIORITY_1_ADDR	0x0C000004
 #define PLIC_PRIORITY_2_ADDR	0x0C000008
@@ -35,66 +107,6 @@ void DisableExternalInterrupt()	//For interrupts from PLIC
 #define PLIC_THRESHOLD_ADDR		0x0C200000
 #define PLIC_PENDING_ADDR		0x0C001000
 #define PLIC_CLAIM_ADDR			0x0C200004
-
-
-#define PLIC_PRIORITY			*(volatile uint32_t*)0x0C000000 //1: 0x0C000004; 2: 0x0C000008; 3: 0x0C000008
-#define PLIC_PRIORITY_1			*(volatile uint32_t*)0x0C000004
-#define PLIC_PRIORITY_2			*(volatile uint32_t*)0x0C000008
-#define PLIC_PRIORITY_3			*(volatile uint32_t*)0x0C00000C
-#define PLIC_ENABLE				*(volatile uint32_t*)0x0C002000
-#define PLIC_THRESHOLD			*(volatile uint32_t*)0x0C200000
-#define PLIC_PENDING			*(volatile uint32_t*)0x0C001000
-#define PLIC_CLAIM				*(volatile uint32_t*)0x0C200004
-
-enum state
-{
-	ENABLE = true,
-	DISABLE = false
-};
-
-
-void PlicPriority(uint8_t id, uint8_t priority)
-{
-	(&PLIC_PRIORITY)[id] = priority;
-}
-
-void PlicEnable(uint8_t id, state st)
-{
-
-}
-
-void PlicThreshold(uint8_t id, uint8_t threshold)
-{
-
-}
-
-uint8_t PlicPending(void)
-{
-
-}
-
-uint8_t PlicComplete(void)
-{
-
-}
-
-
-void test()
-{
-	unsigned int* ip = (unsigned int*)0x0C200004;
-	ip[1] = 0x1;
-
-	*(volatile unsigned int*)0x0C200004 = 0x4;
-	(&(*(unsigned int*)0x0C200004))[1] = 0x4;
-
-	//p/x *(int)0x0c200004
-}
-
-///#define REG (* ( ( volatile int * ) 0x0C200004 ) );
-///REG = 4;
-
-
-////////////////
 
 
 void EnableExternInterrupt()
@@ -170,13 +182,7 @@ void DisableExternInterrupt()
 	return;
 }
 
-void ptr_interrupt_compleat(void)
-{
-	//long int *c = (long int*)PLIC_CLAIM_ADDR;
-	unsigned long int claim = *(unsigned long int*)PLIC_CLAIM_ADDR;
-	*(unsigned long int*)PLIC_CLAIM_ADDR = claim;
-	return;
-}
+
 
 
 
