@@ -9,16 +9,19 @@
 //==================================================
 //CSRs configuration
 
-#define CSR_MIE_MEIE			0x0800	//csr mie.meie
-#define CSR_MSTATUS_MIE			0x0008	//csr mstatus.mie
-
-void EnableExternalInterrupt()	//For interrupts from PLIC
+/**
+ * @brief Enable interrupts from PLIC
+ */
+void EnableExternalInterrupt()
 {
 	asm volatile ("csrs		mie,		%[val]" ::[val] "r"(CSR_MIE_MEIE):);	//mie.meie = 1
 	asm volatile ("csrs		mstatus,	%[val]" ::[val] "r"(CSR_MSTATUS_MIE):);	//mstatus.mie = 1
 }
 
-void DisableExternalInterrupt()	//For interrupts from PLIC
+/**
+ * @brief Disable interrupts from PLIC
+ */
+void DisableExternalInterrupt()
 {
 	asm volatile("csrc		mstatus,	%[val]" ::[val] "r"(CSR_MSTATUS_MIE):);	//mstatus.mie = 0
 	asm volatile("csrc		mie,		%[val]" ::[val] "r"(CSR_MIE_MEIE):);	//mie.meie = 0
@@ -27,11 +30,23 @@ void DisableExternalInterrupt()	//For interrupts from PLIC
 //==================================================
 //PLIC configuration
 
+/**
+ * @brief Set PLIC priority
+ *
+ * @param uint8_t id - Interrupt ID
+ * @param uint8_t priority - Priority value
+ */
 void SetPlicPriority(uint8_t id, uint8_t priority)
 {
 	(&PLIC_PRIORITY)[id] = priority;
 }
 
+/**
+ * @brief Set PLIC enable
+ *
+ * @param uint8_t id - Interrupt ID
+ * @param state st - State (Enable or Disable)
+ */
 void SetPlicEnable(uint8_t id, state st)
 {
 	if(ENABLE == st)
@@ -44,34 +59,50 @@ void SetPlicEnable(uint8_t id, state st)
 	}
 }
 
+/**
+ * @brief Set PLIC threshold
+ *
+ * @param uint8_t threshold - Threshold value
+ */
 void SetPlicThreshold(uint8_t threshold)
 {
 	PLIC_THRESHOLD = threshold;
 }
 
+/**
+ * @brief Get PLIC pending
+ *
+ * @return PLIC pending
+ */
 uint32_t GetPlicPending(void)	//plic.pending is read only
 {
 	return PLIC_PENDING;
 }
 
+/**
+ * @brief Read and complete PLIC interrupt
+ * For one interrupt. For call from handler.
+ *
+ * @return Interrupt ID
+ */
 uint32_t PlicComplete(void)
 {
-	register uint32_t _clime = PLIC_CLAIM;
-	PLIC_CLAIM = _clime;
-	return _clime;
+	register uint32_t _claim = PLIC_CLAIM;
+	PLIC_CLAIM = _claim;
+	return _claim;
 }
 
 /**
- * @brief Сбросить plic.pending
+ * @brief Clear plic.pending
+ * Without handler.
  */
 void PlicClearPending(void)
 {
-	//Сохранение регистров PLIC
+	//Save PLIC fields
 	register uint32_t _plicPriority1 = (&PLIC_PRIORITY)[1];
 	register uint32_t _plicPriority2 = (&PLIC_PRIORITY)[2];
 	register uint32_t _plicPriority3 = (&PLIC_PRIORITY)[3];
 	register uint32_t _plicEnable = PLIC_ENABLE;
-	register uint32_t _plicThreshold = PLIC_THRESHOLD;
 
 	SetPlicPriority(1, 3);
 	SetPlicPriority(2, 3);
@@ -79,9 +110,8 @@ void PlicClearPending(void)
 	SetPlicEnable(1, ENABLE);
 	SetPlicEnable(2, ENABLE);
 	SetPlicEnable(3, ENABLE);
-	SetPlicThreshold(0);	//??
 
-	//Сбросить все plic.pending
+	//Clear all bits plic.pending
 	register uint32_t claimVal = PLIC_CLAIM;
 	while(claimVal != 0)
 	{
@@ -89,12 +119,11 @@ void PlicClearPending(void)
 		claimVal = PLIC_CLAIM;
 	}
 
-	//Восстановление регистров PLIC
+	//Restore PLIC fields
 	(&PLIC_PRIORITY)[1] = _plicPriority1;
 	(&PLIC_PRIORITY)[2] = _plicPriority2;
 	(&PLIC_PRIORITY)[3] = _plicPriority3;
 	PLIC_ENABLE = _plicEnable;
-	PLIC_THRESHOLD = _plicThreshold;
 }
 
 ////////////////

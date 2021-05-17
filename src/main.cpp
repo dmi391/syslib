@@ -3,7 +3,7 @@
 
 int  main()
 {
-
+/*
 	//Пример использования gcc-asm
 		unsigned long output = 0x0;
 		unsigned long input = 0x33221100;
@@ -31,8 +31,6 @@ int  main()
 	//Пример переназначения адреса возврата mepc
 		//SetMepc(&enother_handler);
 
-
-///////////////////////////////////////////////
 
 	//Примеры записи в plic.priority[]
 	//(gdb) set p/x (&*(unsigned int*)0x0C000000)[1] = 0x3
@@ -82,11 +80,19 @@ int  main()
 	//(gdb) p/x PLIC_PENDING
 	uint32_t pending = PLIC_PENDING;
 	uint32_t _pending = GetPlicPending();
+*/
 
+///////////////////////////////////////////////
+	PlicClearPending();
 
+	SetPlicThreshold(3); //2
+	SetPlicPriority(1, 2);
+	SetPlicPriority(2, 2);
 
-
-	uint32_t cl = PlicComplete();
+	SetPlicPriority(3, 3);
+	SetPlicEnable(3, ENABLE);
+	SetPlicEnable(2, ENABLE);
+	SetPlicEnable(1, ENABLE);
 
 
 	SetHandler(&enother_handler);
@@ -94,25 +100,26 @@ int  main()
 	int i = 1;
 	//asm(".word 0x80ffffff"); //exception: illegal instruction
 
-	EnableExternInterrupt();
-	i++;
-
-	EnableExternInterrupt();
+	//EnableExternInterrupt();
+	EnableExternalInterrupt();
 	i++;
 	asm("wfi");
 	i++;
 
-	EnableExternInterrupt();
+	//EnableExternInterrupt();
+	EnableExternalInterrupt();
 	i++;
 	asm("wfi");
 	i++;
 
-	EnableExternInterrupt();
+	//EnableExternInterrupt();
+	EnableExternalInterrupt();
 	i++;
 	asm("wfi");
 	i++;
 
-	EnableExternInterrupt();
+	//EnableExternInterrupt();
+	EnableExternalInterrupt();
 	i++;
 	asm("wfi");
 	i++;
