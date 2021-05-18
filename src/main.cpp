@@ -1,4 +1,5 @@
 #include "syslib/syslib.h"
+#include "timer.h"
 
 
 int  main()
@@ -83,30 +84,34 @@ int  main()
 */
 
 ///////////////////////////////////////////////
-	PlicClearPending();
 
-	SetPlicThreshold(3); //2
+	PlicClearPending();
+	SetHandler(&enother_handler);
+
+	SetPlicThreshold(0); //2
 	SetPlicPriority(1, 2);
 	SetPlicPriority(2, 2);
+	SetPlicPriority(3, 3); //3
 
-	SetPlicPriority(3, 3);
 	SetPlicEnable(3, ENABLE);
 	SetPlicEnable(2, ENABLE);
 	SetPlicEnable(1, ENABLE);
 
+//	EnableExternalInterrupt();
+//	SetPlicThreshold(0);
+//	SetPlicPriority(3, 3);
 
-	SetHandler(&enother_handler);
+
+	EnableExternalInterrupt();
+	Timer timer;
+	timer.StartTimer(10);
 
 	int i = 1;
-	//asm(".word 0x80ffffff"); //exception: illegal instruction
-
-	//EnableExternInterrupt();
-	EnableExternalInterrupt();
 	i++;
 	asm("wfi");
 	i++;
 
-	//EnableExternInterrupt();
+	//asm(".word 0x80ffffff"); //exception: illegal instruction
 	EnableExternalInterrupt();
 	i++;
 	asm("wfi");
