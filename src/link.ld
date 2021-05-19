@@ -5,7 +5,6 @@ MEMORY
 {
 
   RAM_MEM 				: ORIGIN = 0x10000000, LENGTH = 0xFFFFF
-  MEM_DIAG				: ORIGIN = 0x10020010, LENGTH = 0x50
   /*MEM_SOURCE 			: ORIGIN = 0x10020100, LENGTH = 0x3FFFF  
   MEM_RECEIVER 			: ORIGIN = 0x10060100, LENGTH = 0x3FFFF*/
   /*MAS_REG 				: ORIGIN = 0x10130000, LENGTH = 0x1000*/
@@ -100,15 +99,6 @@ PROVIDE( __bss_end = . );
 */
 
   PROVIDE( _sp = 0x10020000);  /* stack */
-  
-/*Диагностика для формирования при возникновении прерывания*/
-/*
-  . = 0x10020010;
-  .diag_section ALIGN(8) :
-  {
-      *(.diag_section)
-  } > MEM_DIAG  
-*/
 
 /*
 . = 0x10020100;

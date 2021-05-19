@@ -20,7 +20,6 @@ extern "C" void DisableExternalInterrupt();
 
 
 //PLIC fields
-
 #define PLIC_PRIORITY			*(volatile uint32_t*)0x0C000000 //1: 0x0C000004; 2: 0x0C000008; 3: 0x0C000008
 	#define PLIC_PRIORITY_1		*(volatile uint32_t*)0x0C000004
 	#define PLIC_PRIORITY_2		*(volatile uint32_t*)0x0C000008
@@ -44,23 +43,43 @@ extern "C" uint32_t PlicComplete(void);
 extern "C" void PlicClearPending(void);
 
 //==================================================
+//Interrupt common
 
-
-
-
-extern "C" void Enable_ExternalInterrupt(void);
-extern "C" void Disable_ExternalInterrupt(void);
 extern "C" void SetHandler(void (*ptrHandler)(void));
 extern "C" void SetMepc(void (*ptrReturn)(void));
+extern "C" void handler(void) __attribute__((interrupt, aligned(4)));
 
 
 
 
-extern "C" void handler(void) __attribute__((interrupt, aligned(4))); //__attribute__ ((aligned (8))) //__attribute__((section(".interrupt_handler"), interrupt));
-extern "C" void enother_handler(void) __attribute__((interrupt, aligned(4)));
+//==================================================
+//CSRs
+
+#define ReadCsr(reg) ({ \
+    register unsigned long readval; \
+    asm volatile ("csrr %[in], " #reg :[in] "=r"(readval) ::); \
+    readval; })
+
+
+#define WriteCsr(reg, val) ({ \
+    asm volatile ("csrw "#reg", %[out]" ::[out] "r"(val):); })
+
+
+#define SetBitsCsr(reg, bits) ({ \
+	asm volatile ("csrs "#reg", %[out]" ::[out] "r"(bits):); })
+
+
+#define ClearBitsCsr(reg, bits) ({ \
+	asm volatile ("csrc "#reg", %[out]" ::[out] "r"(bits):); })
+
+//==================================================
 
 
 
+
+////////////////
+
+///Убрать!!!
 
 extern inline void __attribute__((always_inline))  get_interrupt_diag(void);
 
@@ -86,23 +105,6 @@ typedef struct
 }_interrupt_diag;
 
 //==================================================
-
-#define ReadCsr(reg) ({ \
-    register unsigned long readval; \
-    asm volatile ("csrr %[in], " #reg :[in] "=r"(readval) ::); \
-    readval; })
-
-
-#define WriteCsr(reg, val) ({ \
-    asm volatile ("csrw "#reg", %[out]" ::[out] "r"(val):); })
-
-
-#define SetBitsCsr(reg, bits) ({ \
-	asm volatile ("csrs "#reg", %[out]" ::[out] "r"(bits):); })
-
-
-#define ClearBitsCsr(reg, bits) ({ \
-	asm volatile ("csrc "#reg", %[out]" ::[out] "r"(bits):); })
 
 
 #endif /* SYSLIB_SYSLIB_H_ */

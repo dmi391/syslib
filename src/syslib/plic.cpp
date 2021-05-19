@@ -243,7 +243,7 @@ void interrupt_compleat(void)
 	::
 	[val] "rK"(value), [addr] "rK"(address):
 	);
-	asm volatile("csrrs t0, mip, x0");///
+//	asm volatile("csrrs t0, mip, x0");///
 	return;
 }
 

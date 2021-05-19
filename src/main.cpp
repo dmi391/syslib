@@ -86,7 +86,7 @@ int  main()
 ///////////////////////////////////////////////
 
 	PlicClearPending();
-	SetHandler(&enother_handler);
+	SetHandler(&handler);
 
 	SetPlicThreshold(0); //2
 	SetPlicPriority(1, 2);
@@ -103,11 +103,12 @@ int  main()
 
 
 	EnableExternalInterrupt();
-	Timer timer;
-	timer.StartTimer(10);
+//	Timer timer;
+//	timer.StartTimer(10);
 
 	int i = 1;
 	i++;
+	while(1){}; ///
 	asm("wfi");
 	i++;
 
