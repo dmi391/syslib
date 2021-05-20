@@ -4,15 +4,15 @@
  *      Author: PehotinDO
  */
 
-#include "syslib.h"
+#include "plic.h"
 
 //==================================================
-//CSRs configuration
+//CSRs configuration for PLIC
 
 /**
  * @brief Enable interrupts from PLIC
  */
-void EnableExternalInterrupt()
+void EnableExternalInterrupt(void)
 {
 	asm volatile ("csrs		mie,		%[val]" ::[val] "r"(CSR_MIE_MEIE):);	//mie.meie = 1
 	asm volatile ("csrs		mstatus,	%[val]" ::[val] "r"(CSR_MSTATUS_MIE):);	//mstatus.mie = 1
@@ -21,7 +21,7 @@ void EnableExternalInterrupt()
 /**
  * @brief Disable interrupts from PLIC
  */
-void DisableExternalInterrupt()
+void DisableExternalInterrupt(void)
 {
 	asm volatile("csrc		mstatus,	%[val]" ::[val] "r"(CSR_MSTATUS_MIE):);	//mstatus.mie = 0
 	asm volatile("csrc		mie,		%[val]" ::[val] "r"(CSR_MIE_MEIE):);	//mie.meie = 0
@@ -95,6 +95,7 @@ uint32_t PlicComplete(void)
 /**
  * @brief Clear plic.pending
  * Without handler.
+ * mie.meie and/or mstatus.mie mast be closed.
  */
 void PlicClearPending(void)
 {

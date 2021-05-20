@@ -83,10 +83,12 @@ int  main()
 	uint32_t _pending = GetPlicPending();
 */
 
-///////////////////////////////////////////////
+	SetHandler(&handler);
+
+//==================================================
+//Настройка PLIC
 
 	PlicClearPending();
-	SetHandler(&handler);
 
 	SetPlicThreshold(0); //2
 	SetPlicPriority(1, 2);
@@ -97,18 +99,27 @@ int  main()
 	SetPlicEnable(2, ENABLE);
 	SetPlicEnable(1, ENABLE);
 
+
 //	EnableExternalInterrupt();
-//	SetPlicThreshold(0);
-//	SetPlicPriority(3, 3);
-
-
-	EnableExternalInterrupt();
 //	Timer timer;
 //	timer.StartTimer(10);
+//==================================================
+
+//==================================================
+//Настройка CLINT
+
+
+
+//==================================================
 
 	int i = 1;
 	i++;
-	while(1){}; ///
+
+		while(1){
+			i++;
+			i -= 2;
+		};
+
 	asm("wfi");
 	i++;
 
