@@ -49,12 +49,26 @@ void DisableClintSoftwareInterrupt()
 //CLINT configuration
 
 /**
- * @brief Clear CSR bits mip.msip and mip.mtip
- * Without handler.
- * mie.meie and/or mstatus.mie mast be closed.//????????????????????????????????
+ * @brief Set clint timer
  */
-void ClintClearMipMsipMtip(void)
+void SetClintTimer(uint64_t period)
 {
-
+	CLINT_MTIMECMP = period;
+	CLINT_MTIME = 0;
 }
 
+/**
+ * @brief Set software interrupt from CLINT
+ */
+void SetClintSoftwareInterrupt()
+{
+	CLINT_MSIP = 1;
+}
+
+/**
+ * @brief Clear software interrupt from CLINT
+ */
+void ClearClintSoftwareInterrupt()
+{
+	CLINT_MSIP = 0;
+}

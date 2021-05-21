@@ -16,12 +16,34 @@ void handler(void)
 	{
 		case 0x8000000000000003:	//Machine software interrupt (CLINT)
 		{
-
+			ClearClintSoftwareInterrupt();
+			DisableClintSoftwareInterrupt();
 			break;
 		}
 		case 0x8000000000000007:	//Machine internal timer interrupt (CLINT)
 		{
+			DisableClintTimerInterrupt();
 
+
+/*Убрать!!!
+			SetClintTimer(1000000);///!!!
+
+			static uint64_t ArrCLINT_MTIME[10];
+			static uint64_t ArrMcycle[10];
+
+			static uint64_t i = 0;
+			i++;
+			if(i > 10)
+			{
+				int k = 0;
+				k++;
+			}
+			else
+			{
+				ArrCLINT_MTIME[i] = CLINT_MTIME;
+				ArrMcycle[i] = ReadCsr(mcycle);
+			}
+*/
 			break;
 		}
 		case 0x800000000000000b:	//Machine external interrupt (PLIC)

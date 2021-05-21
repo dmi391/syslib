@@ -23,8 +23,12 @@ extern "C" void DisableClintSoftwareInterrupt();
 
 //CLINT fields
 #define CLINT_MSIP				*(volatile uint32_t*)0x02000000
-#define CLINT_MTIMECMP			*(volatile uint32_t*)0x02004000
-#define CLINT_MTIME				*(volatile uint32_t*)0x0200BFF8
+#define CLINT_MTIMECMP			*(volatile uint64_t*)0x02004000
+#define CLINT_MTIME				*(volatile uint64_t*)0x0200BFF8
+
+extern "C" void SetClintTimer(uint64_t period);
+extern "C" void SetClintSoftwareInterrupt();
+extern "C" void ClearClintSoftwareInterrupt();
 
 
 #endif /* SYSLIB_CLINT_H_ */
