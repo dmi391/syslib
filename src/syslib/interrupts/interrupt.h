@@ -10,6 +10,9 @@
 #include "clint.h"
 #include "plic.h"
 
+#include <setjmp.h>
+extern jmp_buf ExceptionBuf;
+
 
 //Interrupt common
 extern "C" void SetHandler(void (*ptrHandler)(void));

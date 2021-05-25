@@ -70,6 +70,7 @@ void handler(void)
 		}
 		default:	//Exceptions
 		{
+			longjmp(ExceptionBuf, (uint32_t)ReadCsr(mcause));
 			break;
 		}
 	}

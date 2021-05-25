@@ -1,6 +1,9 @@
 #include "syslib/syslib.h"
 #include "timer.h"
 
+#include <setjmp.h>
+jmp_buf ExceptionBuf;
+
 
 int  main()
 {
@@ -120,26 +123,33 @@ int  main()
 //==================================================
 
 
-	int i = 1;
+	int bp = 1;
 //		while(1)
 //		{
-//			i++;
-//			i -= 2;
+//			bp++;
+//			bp -= 2;
 //		};
-	i++;
+	bp++;
 	asm("wfi");
-	i++;
+	bp++;
 
-	//asm(".word 0x80ffffff"); //exception: illegal instruction
-	//EnableExternalInterrupt();
-	i++;
-	asm("wfi");
-	i++;
 
 	//EnableExternalInterrupt();
-	i++;
+	bp++;
 	asm("wfi");
-	i++;
+	bp++;
+
+
+	//Exception
+	int Value = setjmp(ExceptionBuf); //0 - если прямой вызов setjmp(...)
+	if(Value)
+	{
+		while(true){};	//Exception trap
+	}
+	bp++;
+	asm(".word 0x80ffffff"); //Exception: illegal instruction
+	bp++;
+
 
 	return 0;
 }
