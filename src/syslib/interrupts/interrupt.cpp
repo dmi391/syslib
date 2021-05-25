@@ -4,7 +4,8 @@
  *      Author: PehotinDO
  */
 
-#include "../syslib.h" //#include "interrupt_common.h"
+#include "../syslib.h"
+#include "interrupt.h"
 
 
 /**
