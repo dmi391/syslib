@@ -8,7 +8,42 @@
 
 
 /**
- * @brief Interrupt and exception handler
+ * @brief Handler for 0st source external interrupt
+ * Never execute
+ */
+void HandlerExtern0(){}
+
+/**
+ * @brief Handler for 1st source external interrupt
+ */
+void HandlerExtern1()
+{
+	return;
+}
+
+/**
+ * @brief Handler for 2nd source external interrupt
+ */
+void HandlerExtern2()
+{
+	return;
+}
+
+/**
+ * @brief Handler for 3rd source external interrupt
+ */
+void HandlerExtern3()
+{
+	return;
+}
+
+/**
+ * @brief Array of handlers external interrupts
+ */
+static void((*ArrayHandlers[4]))() {HandlerExtern0, HandlerExtern1, HandlerExtern2, HandlerExtern3};
+
+/**
+ * @brief Common interrupt and exception handler
  */
 void handler(void)
 {
@@ -23,62 +58,22 @@ void handler(void)
 		case 0x8000000000000007:	//Machine internal timer interrupt (CLINT)
 		{
 			DisableClintTimerInterrupt();
-
-
-/*Убрать!!!
-			SetClintTimer(1000000);///!!!
-
-			static uint64_t ArrCLINT_MTIME[10];
-			static uint64_t ArrMcycle[10];
-
-			static uint64_t i = 0;
-			i++;
-			if(i > 10)
-			{
-				int k = 0;
-				k++;
-			}
-			else
-			{
-				ArrCLINT_MTIME[i] = CLINT_MTIME;
-				ArrMcycle[i] = ReadCsr(mcycle);
-			}
-*/
 			break;
 		}
 		case 0x800000000000000b:	//Machine external interrupt (PLIC)
 		{
-			register uint32_t InterruptId = PlicComplete();	//0x3
+			register uint32_t InterruptId = PlicComplete();	//0x3 = button
 			//DisableExternalInterrupt();
-
-			//array[claim]();
+			ArrayHandlers[InterruptId]();
 			break;
 		}
 		default:	//Exceptions
 		{
-
 			break;
 		}
 	}
 	return;	//mret
 }
-
-
-//Вызов по указателю:
-//void((*array[]))() {0, handler1, handler2, handler3 };
-//unsigned long int claim = interrupt_compleat();
-//Вызов: array[claim](); //При таком вызове handler() сохраняет восстанавливает все регистры, а при использовании switch-case сохраняются и восстанавливаются только нужные
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * @brief Set handler address to SCR mtvec

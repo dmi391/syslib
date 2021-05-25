@@ -99,7 +99,7 @@ int  main()
 	SetPlicEnable(2, ENABLE);
 	SetPlicEnable(1, ENABLE);
 
-//	EnableExternalInterrupt();
+	EnableExternalInterrupt();
 
 //	Timer timer;
 //	timer.StartTimer(10);
@@ -114,25 +114,19 @@ int  main()
 
 //==================================================
 //CLINT timer
-/*Убрать!!!
-	int t0 = CLINT_MTIME;
-	SetClintTimer(1000000);
-	int t1 = CLINT_MTIME;
-	int t0_mip = ReadCsr(mip);
-*/
 
-	SetClintTimer(1000000);
-	EnableClintTimerInterrupt();
+//	SetClintTimer(1000000);
+//	EnableClintTimerInterrupt();
 //==================================================
 
+
 	int i = 1;
+//		while(1)
+//		{
+//			i++;
+//			i -= 2;
+//		};
 	i++;
-/*
-		while(1){
-			i++;
-			i -= 2;
-		};
-*/
 	asm("wfi");
 	i++;
 

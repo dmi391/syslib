@@ -12,7 +12,7 @@
 
 //CSRs for interrupts from CLINT
 #define CSR_MIE_MTIE			0x0080	//csr mie.mtie
-#define CSR_MIE_MSIE			0x0008	//csr mie.msip
+#define CSR_MIE_MSIE			0x0008	//csr mie.msie
 #define CSR_MSTATUS_MIE			0x0008	//csr mstatus.mie
 
 extern "C" void EnableClintTimerInterrupt();
