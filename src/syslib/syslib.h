@@ -9,8 +9,8 @@
 
 #include <cstdint>
 //#include "interrupt_common.h"
-#include "plic.h"
-#include "clint.h"
+#include "interrupts/clint.h"
+#include "interrupts/plic.h"
 
 
 //==================================================
