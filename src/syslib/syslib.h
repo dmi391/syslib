@@ -16,20 +16,20 @@
 
 #define ReadCsr(reg) ({ \
     register unsigned long readval; \
-    asm volatile ("csrr %[in], " #reg :[in] "=r"(readval) ::); \
+    asm volatile ("csrr %[out], " #reg :[out] "=r"(readval) ::); \
     readval; })
 
 
 #define WriteCsr(reg, val) ({ \
-    asm volatile ("csrw "#reg", %[out]" ::[out] "r"(val):); })
+    asm volatile ("csrw "#reg", %[in]" ::[in] "r"(val):); })
 
 
 #define SetBitsCsr(reg, bits) ({ \
-	asm volatile ("csrs "#reg", %[out]" ::[out] "r"(bits):); })
+	asm volatile ("csrs "#reg", %[in]" ::[in] "r"(bits):); })
 
 
 #define ClearBitsCsr(reg, bits) ({ \
-	asm volatile ("csrc "#reg", %[out]" ::[out] "r"(bits):); })
+	asm volatile ("csrc "#reg", %[in]" ::[in] "r"(bits):); })
 
 //==================================================
 
