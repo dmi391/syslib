@@ -32,6 +32,6 @@ Toolchain: RISC-V GCC/Newlib (riscv64-unknown-elf-gcc).
 * `-fno-unwind-tables`
 * `-fno-use-cxa-atexit` (деструкторы static объектов)
 * `-fno-threadsafe-statics`
-* `-Xlinker --gc-sections` (Remove unused sections). Возможно будет эффективнее с `-fdata-sections` (создание отдельных секций под каждую функцию).
+* `-Xlinker --gc-sections` (Remove unused sections). Возможно будет эффективнее с `-ffunction-sections` и `-fdata-sections` (создание отдельных секций под каждый объект).
 * `-fno-rtti` (dinamic cast)
 
