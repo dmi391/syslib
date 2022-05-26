@@ -19,7 +19,7 @@ extern "C" void DisableExternalInterrupt();
 
 
 //PLIC fields
-#define PLIC_PRIORITY			*(volatile uint32_t*)0x0C000000 //1: 0x0C000004; 2: 0x0C000008; 3: 0x0C000008
+#define PLIC_PRIORITY			*(volatile uint32_t*)0x0C000000 //1: 0x0C000004; 2: 0x0C000008; 3: 0x0C00000C
 	#define PLIC_PRIORITY_1		*(volatile uint32_t*)0x0C000004
 	#define PLIC_PRIORITY_2		*(volatile uint32_t*)0x0C000008
 	#define PLIC_PRIORITY_3		*(volatile uint32_t*)0x0C00000C

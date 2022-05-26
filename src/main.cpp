@@ -124,11 +124,6 @@ int  main()
 
 
 	int bp = 1;
-//		while(1)
-//		{
-//			bp++;
-//			bp -= 2;
-//		};
 	bp++;
 	asm("wfi");
 	bp++;

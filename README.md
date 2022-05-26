@@ -14,7 +14,6 @@
 
 main.cpp содержит примеры вызовов функций.
 
-
 ## Сборка и линковка
 
 Toolchain: RISC-V GCC/Newlib (riscv64-unknown-elf-gcc).
@@ -35,3 +34,7 @@ Toolchain: RISC-V GCC/Newlib (riscv64-unknown-elf-gcc).
 * `-Xlinker --gc-sections` (Remove unused sections). Возможно будет эффективнее с `-ffunction-sections` и `-fdata-sections` (создание отдельных секций под каждый объект).
 * `-fno-rtti` (dinamic cast)
 
+## Запуск
+
+   cd ./launch-sh
+   ./openocd_gdb_launch.sh ../Debug/syslib.elf

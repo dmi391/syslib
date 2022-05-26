@@ -48,7 +48,7 @@ get_time_mcycle:
 
 //Объявление: extern "C" unsigned long get_mcycle(void);
 .global get_mcycle
-cycle:
+get_mcycle:
 	csrrs a0, mcycle, zero
 	ret
 
