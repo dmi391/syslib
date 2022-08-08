@@ -1,10 +1,6 @@
 
-syslib\.txt
-
+syslib.txt
 \.project
-
 \.cproject
-
-Debug/
-
 \.settings/
+Debug/

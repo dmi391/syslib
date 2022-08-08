@@ -1,40 +1,58 @@
-# Библиотека syslib
+# syslib
 
-## syslib содержит:
-* Стартфайл startup.S
-* Функции для работы с прерываниями (драйверы)
-* Другие функции
+----
 
-Для использования syslib нужно подключить `"syslib/syslib.h"`
-Проект собирать с `-nostartfiles`.
+'syslib' contains minimum required for embedded RISC-V project.
 
-## Описание
+## syslib content
 
-Функция `_init()` вызывается внутри `__libc_init_array()` в startup.S, при этом `_init()` - пользовательская функция, содержащая какие-либо дополнительные действия для подготовки или инициализации системы перед работой. Функция `_init()` должна быть объявлена и определена пользователем, без неё проект не будет линковаться. В данной реализации символ `_init` объявлен и определен прямо в startup.S по умолчанию это пустая функция.
+* Startfile startup.S
+* Ld-script linker.ld
+* Functions for work with interrupts (PLIC and CLINT drivers, handlers etc.)
+* Others
 
-main.cpp содержит примеры вызовов функций.
+To use syslib it is necessary to include `syslib/syslib.h`.
 
-## Сборка и линковка
+## Startfile
 
-Toolchain: RISC-V GCC/Newlib (riscv64-unknown-elf-gcc).
+Function `_init()` called inside `__libc_init_array()` in startup.S. `_init()` is user defined function which contains any additional actions before `main()`. Function `_init()` must be declared and defined by user otherwise project can't be linked. In this implementation symbol `_init` is declared and defined immediately in startup.S (empty function).
 
-Нужно использовать версию компилятора, которая не игнорирует `__attribute__((interrupt))`. (Например версия gcc-2018.07.0-x86_64_...)
+main.cpp contains examples of function calls.
 
-Так как `__libc_init_array()` является частью стандартной библиотеки, то линковать нужно с newlib. Project -> Properties -> C++ Linker -> Libraries -> Library search path (-L):
-			`"\...\riscv64-unknown-elf\lib\rv64imafdc\lp64d"`
+## Build and link
 
-Ключи для ld: Project -> Properties -> C++ Linker -> General:
-			`-nostartfiles`
+Toolchain: RISC-V GCC/Newlib (riscv64-unknown-elf-gcc).  
+Use compiler version which does not ignore `__attribute__((interrupt))` (version gcc-2018.07.0-x86_64_... or newer).
 
-Можно добавить ключи оптимизации для C++ компилятора:
+Link with flag `-nostartfiles`.  
+
+`__libc_init_array()` is the part of libc, so it is necessary to link project with newlib:
+
+        `-L"\...\riscv64-unknown-elf\lib\rv64imafdc\lp64d"`
+
+For optimization, it can be used keys:
+
 * `-fno-exceptions`
 * `-fno-unwind-tables`
-* `-fno-use-cxa-atexit` (деструкторы static объектов)
+* `-fno-use-cxa-atexit` (static object destructors)
 * `-fno-threadsafe-statics`
-* `-Xlinker --gc-sections` (Remove unused sections). Возможно будет эффективнее с `-ffunction-sections` и `-fdata-sections` (создание отдельных секций под каждый объект).
-* `-fno-rtti` (dinamic cast)
+* `-Xlinker --gc-sections` (Remove unused sections). It will be more effective with `-ffunction-sections` and `-fdata-sections`
+* `-fno-rtti` (dynamic cast)
 
-## Запуск
+## Quick start
 
-   cd ./launch-sh
-   ./openocd_gdb_launch.sh ../Debug/syslib.elf
+Set actual paths in file '/syslib/paths'.
+
+Build project:
+
+        make
+
+Launch with hardware:
+
+        cd ./launch-sh/
+        ./openocd_gdb_launch.sh ../Debug/syslib.elf
+
+Launch with Spike:
+
+        cd ./launch-sh/
+        ./spike_openocd_gdb_launch.sh ../Debug/syslib.elf
